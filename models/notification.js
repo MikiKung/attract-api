@@ -1,27 +1,23 @@
-const mongoose = reqire('mongoose')
+const mongoose = require('mongoose')
 
-const Notifications = mongoose.model(
-  'notification',
-  new mongoose.Schema({
-    ID: {
-      type: String,
-    },
-    Img: {
-      type: String,
-    },
-    ownUserId: {
-      // -------------------
-    },
-    OtherUserId: {
-      // -------------------
-    },
-    Text: {
-      type: String,
-    },
-    type: {
-      type: String,
-    },
-  }),
-)
+const Notifications = new mongoose.Schema({
+  Img: {
+    type: String,
+  },
+  ownUserId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'user',
+  },
+  otherUserId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'user',
+  },
+  textNoti: {
+    type: String,
+  },
+  typeNoti: {
+    type: String,
+  },
+})
 
-module.export = Notifications;
+module.export = mongoose.model('notification', Notifications)

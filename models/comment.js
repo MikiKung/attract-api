@@ -1,24 +1,19 @@
-const mongoose = reqire('mongoose')
+const mongoose = require('mongoose')
 
-const Comments = mongoose.model(
-  'comment',
-  new mongoose.Schema({
-    ID: {
-      type: String,
-    },
-    Img: {
-      type: String,
-    },
-    ownUserId: {
-      // -------------------
-    },
-    CommentUserId: {
-      // ------------------
-    },
-    CommentText: {
-      type: String,
-    },
-  }),
-)
+const Comments = new mongoose.Schema({
+  ownUserId: {
+    type: String,
+  },
+  commentUserId: {
+    type: String,
+  },
+  commentText: {
+    type: String,
+  },
+  postId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'post',
+  },
+})
 
-module.export = Comments
+module.exports = mongoose.model('comment', Comments)

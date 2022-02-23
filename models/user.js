@@ -1,65 +1,58 @@
-const mongoose = reqire('mongoose')
+const mongoose = require('mongoose')
 
-const User = mongoose.model(
-  'user',
-  new mongoose.Schema({
-    ID: {
-      type: String,
-    },
-    img: {
-      type: String,
-    },
-    Firstname: {
-      type: String,
-    },
-    Surname: {
-      type: String,
-    },
-    Username: {
-      type: String,
-    },
-    Email: {
-      type: String,
-    },
-    Password: {
-      type: String,
-    },
-    bio: {
-      type: String,
-    },
-    gender: {
-      type: String,
-    },
-    BirthDate: {
-      type: Date,
-    },
-    InterestCategoryId: {
-      type: mongoose.types.ObjectId,
-      ref: 'category',
-    },
-    PostId: {
-        type: mongoose.types.ObjectId,
-        ref: 'post ',
-    },
-    FollowingUser: {
-      type: String,
-    },
-    FollowerUser: {
-      type: String,
-    },
-    MarkPostId: {
-      type: String,
-    },
-    location: {
-      type: String,
-    },
-    NotificationId: {
-      type: String,
-    },
-    HistorySearch: {
-      type: String,
-    },
-  }),
-)
+const User = new mongoose.Schema({
+  img: {
+    type: String,
+  },
+  firstname: {
+    type: String,
+  },
+  surname: {
+    type: String,
+  },
+  username: {
+    type: String,
+  },
+  email: {
+    type: String,
+  },
+  password: {
+    type: String,
+  },
+  bio: {
+    type: String,
+  },
+  gender: {
+    type: String,
+  },
+  birthDate: {
+    type: Date,
+  },
+  interestCategoryId: {
+    type: mongoose.types.ObjectId,
+    ref: 'category',
+  },
+  postId: {
+    type: mongoose.types.ObjectId,
+    ref: 'post ',
+  },
+  followingUser: {
+    type: mongoose.types.ObjectId,
+    ref: 'post ',
+  },
+  followerUser: {
+    type: mongoose.types.ObjectId,
+    ref: 'post ',
+  },
+  markPostId: {
+    type: String,
+  },
+  notificationId: {
+    type: String,
+  },
+  historySearch: {
+    type: String,
+  },
+})
 
-module.export = User
+module.export = mongoose.model('user', User)

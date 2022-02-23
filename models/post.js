@@ -1,30 +1,23 @@
-const mongoose = reqire('mongoose')
+const mongoose = require('mongoose')
 
-const Posts = mongoose.model(
-  'post',
-  new mongoose.Schema({
-    ID: {
-      type: String,
-    },
-    Img: {
-      type: String,
-    },
-    ownUserId: {
-      // -------------------
-    },
-    ownUserId: {
-      // -------------------
-    },
-    TimePost: {
-      type: Date,
-    },
-    PostText: {
-      type: String,
-    },
-    CommentId: {
-      // ------------------
-    },
-  }),
-)
+const Posts = new mongoose.Schema({
+  img: {
+    type: String,
+  },
+  ownUserId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'user',
+  },
+  timePost: {
+    type: Date,
+  },
+  postText: {
+    type: String,
+  },
+  categoryId: {
+    type: mongoose.Types.ObjectId,
+    ref: 'category',
+  },
+})
 
-module.export = Posts
+module.export = mongoose.model('post', Posts)
