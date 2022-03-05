@@ -28,31 +28,31 @@ const User = new mongoose.Schema({
   birthDate: {
     type: Date,
   },
-  interestCategoryId: {
-    type: mongoose.types.ObjectId,
+  interestCategoryId: [{
+    type: mongoose.Types.ObjectId,
     ref: 'category',
-  },
-  postId: {
-    type: mongoose.types.ObjectId,
+  }],
+  postId: [{
+    type: mongoose.Types.ObjectId,
     ref: 'post ',
-  },
-  followingUser: {
-    type: mongoose.types.ObjectId,
-    ref: 'post ',
-  },
-  followerUser: {
-    type: mongoose.types.ObjectId,
-    ref: 'post ',
-  },
-  markPostId: {
+  }],
+  followingUser: [{
+    type: mongoose.Types.ObjectId,
+    ref: 'user ',
+  }],
+  followerUser: [{
+    type: mongoose.Types.ObjectId,
+    ref: 'user',
+  }],
+  markPostId: [{
     type: String,
-  },
-  notificationId: {
+  }],
+  notificationId: [{
     type: String,
-  },
-  historySearch: {
+  }],
+  historySearch: [{
     type: String,
-  },
+  }],
 })
 
-module.export = mongoose.model('user', User)
+module.exports = mongoose.model('user', User)

@@ -7,6 +7,7 @@ const cors = require('cors')
 db
 // const menu = require('./controllers/menu.js')
 const category = require('./controller/category.js')
+const user = require('./controller/user.js')
 
 app.use(
   cors({
@@ -23,10 +24,10 @@ app.listen(port, () => {
 
 app.use(express.json())
 app.use('/category', category)
+app.use('/user', user)
 
 // app.use('/menus', menu)
 // app.use('/categories', category)
-// app.use('/users', user)
 // app.use('/promotions', promotion)
 // app.use('/orders', order)
 

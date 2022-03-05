@@ -10,46 +10,47 @@ router.get('/', async (req, res) => {
 })
 
 // get one
-router.get('/:id',async function(req, res){
+router.get('/:id', async function (req, res) {
   const id = req.params.id
   const category = await Category.findOne({
-      _id: id
+    _id: id,
   })
-  res.send(category)    
+  res.send(category)
 })
 
-router.post('/', async function(req, res){
-  const body = req.body;
+router.post('/', async function (req, res) {
+  const body = req.body
   try {
-      await Category.create(body)
-      res.send('post complete')
+    await Category.create(body)
+    res.send(body)
   } catch (error) {
-      console.log(error)
-      res.send('post incomplete')
+    console.log(error)
+    res.send('post incomplete')
   }
 })
 
-router.delete('/:id', async function(req, res){
+router.delete('/:id', async function (req, res) {
   const id = req.params.id
   await Category.deleteOne({
-      _id: id        
+    _id: id,
   })
   res.send('delete complete')
 })
 
-router.patch('/:id', async function(req, res){
-  const id = req.params.id 
+router.patch('/:id', async function (req, res) {
+  const id = req.params.id
   const body = req.body
   try {
-      await Category.updateOne({
-      _id: id 
+    await Category.updateOne(
+      {
+        _id: id,
       },
-      {$set:body 
-      })
-      res.send('patch complete')
+      { $set: body },
+    )
+    res.send('patch complete')
   } catch (error) {
-      console.log(error)
-      res.send('patch incomplete')
+    console.log(error)
+    res.send('patch incomplete')
   }
 })
 
