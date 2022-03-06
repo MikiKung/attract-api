@@ -5,6 +5,16 @@ const User = require('../models/user')
 
 const router = express.Router()
 
+const middleware = (req, res, next) => {
+  const token = req.headers.authorization
+  if (!token || token == 'Bearer null') {
+    return res.sendStatus(401)
+  }
+  const r = jwt.verify(token.split(' ')[1], 'shhh')
+  req.decodedToken = r.id
+  next()
+}
+
 router.get('/', async (req, res) => {
   const Users = await User.find()
   res.send(Users)
@@ -35,8 +45,9 @@ router.delete('/:id', async function (req, res) {
   res.send('delete complete')
 })
 
-router.patch('/:id', async function (req, res) {
-  const id = req.params.id
+router.patch('/me', middleware, async function (req, res) {
+  const id = req.decodedToken
+  // console.log(id)
   const body = req.body
   try {
     await User.updateOne(
@@ -45,9 +56,8 @@ router.patch('/:id', async function (req, res) {
       },
       { $set: body },
     )
-    res.send('patch complete')
+    res.send(body)
   } catch (error) {
-    console.log(error)
     res.send('patch incomplete')
   }
 })
@@ -66,17 +76,6 @@ router.post('/login', async function (req, res) {
     }
   }
 })
-
-const middleware = (req, res, next) => {
-  const token = req.headers.authorization
-  if (!token || token == 'Bearer null') {
-    return res.sendStatus(200)
-  }
-  const r = jwt.verify(token.split(' ')[1], 'shhh')
-  req.decodedToken = r.id
-  // console.log(r)
-  next()
-}
 
 router.get('/me', middleware, async (req, res) => {
   const user = await User.findById(req.decodedToken).select('-password')

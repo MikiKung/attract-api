@@ -4,10 +4,13 @@ const User = new mongoose.Schema({
   img: {
     type: String,
   },
+  bgImg: {
+    type: String,
+  },
   firstname: {
     type: String,
   },
-  surname: {
+  surename: {
     type: String,
   },
   username: {
@@ -25,34 +28,45 @@ const User = new mongoose.Schema({
   gender: {
     type: String,
   },
-  birthDate: {
-    type: Date,
-  },
-  interestCategoryId: [{
-    type: mongoose.Types.ObjectId,
-    ref: 'category',
-  }],
-  postId: [{
-    type: mongoose.Types.ObjectId,
-    ref: 'post ',
-  }],
-  followingUser: [{
-    type: mongoose.Types.ObjectId,
-    ref: 'user ',
-  }],
-  followerUser: [{
-    type: mongoose.Types.ObjectId,
-    ref: 'user',
-  }],
-  markPostId: [{
-    type: String,
-  }],
-  notificationId: [{
-    type: String,
-  }],
-  historySearch: [{
-    type: String,
-  }],
+  interestCategoryId: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'category',
+    },
+  ],
+  postId: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'post ',
+    },
+  ],
+  followingUser: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'user ',
+    },
+  ],
+  followerUser: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'user',
+    },
+  ],
+  markPostId: [
+    {
+      type: String,
+    },
+  ],
+  notificationId: [
+    {
+      type: String,
+    },
+  ],
+  historySearch: [
+    {
+      type: String,
+    },
+  ],
 })
 
 module.exports = mongoose.model('user', User)
