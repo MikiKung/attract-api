@@ -10,14 +10,6 @@ router.get('/', async (req, res) => {
   res.send(Users)
 })
 
-router.get('/:id', async function (req, res) {
-  const id = req.params.id
-  const Users = await User.findOne({
-    _id: id,
-  })
-  res.send(Users)
-})
-
 router.post('/', async function (req, res) {
   const user = await User.findOne().where({ email: req.body.email })
   const body = req.body
@@ -73,6 +65,30 @@ router.post('/login', async function (req, res) {
       res.send('invalid password')
     }
   }
+})
+
+const middleware = (req, res, next) => {
+  const token = req.headers.authorization
+  if (!token || token == 'Bearer null') {
+    return res.sendStatus(200)
+  }
+  const r = jwt.verify(token.split(' ')[1], 'shhh')
+  req.decodedToken = r.id
+  // console.log(r)
+  next()
+}
+
+router.get('/me', middleware, async (req, res) => {
+  const user = await User.findById(req.decodedToken).select('-password')
+  res.send(user)
+})
+
+router.get('/:id', async function (req, res) {
+  const id = req.params.id
+  const Users = await User.findOne({
+    _id: id,
+  })
+  res.send(Users)
 })
 
 module.exports = router
