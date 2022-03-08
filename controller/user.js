@@ -62,6 +62,24 @@ router.patch('/me', middleware, async function (req, res) {
   }
 })
 
+// router.post('/me', middleware, async function (req, res) {
+//   const id = req.decodedToken
+//   // console.log(id)
+//   const body = req.body
+//   try {
+//     await User.updateOne(
+//       {
+//         _id: id,
+//       },
+//       { $set: body },
+//     )
+//     res.send(body)
+//   } catch (error) {
+//     res.send('patch incomplete')
+//   }
+// })
+
+
 //login
 router.post('/login', async function (req, res) {
   const user = await User.findOne().where({ email: req.body.email })

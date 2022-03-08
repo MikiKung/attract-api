@@ -1,6 +1,5 @@
 const db = require('./db/mongo')
 const express = require('express')
-const { request } = require('express')
 const app = express()
 const port = 3001
 const cors = require('cors')
@@ -8,6 +7,7 @@ db
 // const menu = require('./controllers/menu.js')
 const category = require('./controller/category.js')
 const user = require('./controller/user.js')
+const post = require('./controller/post.js')
 
 app.use(
   cors({
@@ -25,6 +25,7 @@ app.listen(port, () => {
 app.use(express.json())
 app.use('/category', category)
 app.use('/user', user)
+app.use('/post', post)
 
 // app.use('/menus', menu)
 // app.use('/categories', category)

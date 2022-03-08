@@ -14,10 +14,12 @@ const Posts = new mongoose.Schema({
   postText: {
     type: String,
   },
-  categoryId: {
-    type: mongoose.Types.ObjectId,
-    ref: 'category',
-  },
+  categoryId: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'category',
+    },
+  ],
 })
 
-module.export = mongoose.model('post', Posts)
+module.exports = mongoose.model('post', Posts)
