@@ -16,7 +16,12 @@ const middleware = (req, res, next) => {
 }
 
 router.get('/', async (req, res) => {
-  const Users = await User.find()
+  const Users = await User.find().populate({
+    path: 'postId',
+    populate: {
+      path: 'categoryId',
+    },
+  })
   res.send(Users)
 })
 
@@ -79,7 +84,6 @@ router.patch('/me', middleware, async function (req, res) {
 //   }
 // })
 
-
 //login
 router.post('/login', async function (req, res) {
   const user = await User.findOne().where({ email: req.body.email })
@@ -96,7 +100,18 @@ router.post('/login', async function (req, res) {
 })
 
 router.get('/me', middleware, async (req, res) => {
-  const user = await User.findById(req.decodedToken).select('-password')
+  const user = await User.findById(req.decodedToken)
+    .select('-password')
+    .populate({
+      path: 'postId',
+      // sort
+      options: {
+        sort: { timePost: -1 },
+      },
+      populate: {
+        path: 'categoryId',
+      },
+    })
   res.send(user)
 })
 
@@ -105,6 +120,22 @@ router.get('/:id', async function (req, res) {
   const Users = await User.findOne({
     _id: id,
   })
+    .populate('interestCategoryId')
+    .populate({
+      path: 'postId',
+      // sort
+      options: {
+        sort: { timePost: -1 },
+      },
+      populate: [
+        {
+          path: 'categoryId',
+        },
+        {
+          path: 'markId',
+        },
+      ],
+    })
   res.send(Users)
 })
 

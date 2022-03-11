@@ -2,10 +2,12 @@ const mongoose = require('mongoose')
 
 const mark = new mongoose.Schema({
   userId: {
-    type: String,
+    type: mongoose.Types.ObjectId,
+    ref: "user"
   },
   postId: {
-    type: String,
+    type: mongoose.Types.ObjectId,
+    ref: "post"
   },
 })
 

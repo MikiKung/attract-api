@@ -5,6 +5,7 @@ const port = 3001
 const cors = require('cors')
 db
 // const menu = require('./controllers/menu.js')
+const mark = require('./controller/mark.js')
 const category = require('./controller/category.js')
 const user = require('./controller/user.js')
 const post = require('./controller/post.js')
@@ -23,6 +24,7 @@ app.listen(port, () => {
 })
 
 app.use(express.json())
+app.use('/mark', mark)
 app.use('/category', category)
 app.use('/user', user)
 app.use('/post', post)

@@ -20,6 +20,12 @@ const Posts = new mongoose.Schema({
       ref: 'category',
     },
   ],
+  markId: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: 'mark',
+    },
+  ],
 })
 
 module.exports = mongoose.model('post', Posts)
