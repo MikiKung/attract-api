@@ -43,7 +43,7 @@ const User = new mongoose.Schema({
   followingUser: [
     {
       type: mongoose.Types.ObjectId,
-      ref: 'user ',
+      ref: 'user',
     },
   ],
   followerUser: [
@@ -55,7 +55,7 @@ const User = new mongoose.Schema({
   markPostId: [
     {
       type: mongoose.Types.ObjectId,
-      ref: "mark"
+      ref: 'mark',
     },
   ],
   notificationId: [

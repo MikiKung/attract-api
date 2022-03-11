@@ -3,17 +3,53 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 
+const Joi = require('joi')
+
 const router = express.Router()
 
 const middleware = (req, res, next) => {
   const token = req.headers.authorization
   if (!token || token == 'Bearer null') {
-    return res.sendStatus(401)
+    return res.status(200).send('no token')
   }
   const r = jwt.verify(token.split(' ')[1], 'shhh')
   req.decodedToken = r.id
   next()
 }
+
+router.post('/follow', middleware, async (req, res) => {
+  const { error } = Joi.object({
+    followingId: Joi.string().required(),
+  }).validate(req.body)
+
+  if (error) {
+    res.send({ error })
+  } else {
+    await User.updateOne(
+      { _id: req.decodedToken },
+      { $push: { followingUser: req.body.followingId } },
+    )
+    await User.updateOne(
+      { _id: req.body.followingId },
+      { $push: { followerUser: req.decodedToken } },
+    )
+    res.send('Following success')
+  }
+})
+
+router.delete('/unfollow/:id', middleware, async (req, res) => {
+  const user = await User.findById(req.decodedToken)
+  const followingUser = await User.findById(req.params.id)
+
+  user.followingUser = user.followingUser.filter(e => e.toString() !== req.params.id)
+  followingUser.followerUser = followingUser.followerUser.filter(e => e.toString() !== req.decodedToken)
+
+  await user.save()
+  await followingUser.save()
+
+  res.send("Unfollow success")
+
+})
 
 router.get('/', async (req, res) => {
   const Users = await User.find().populate({
@@ -52,7 +88,6 @@ router.delete('/:id', async function (req, res) {
 
 router.patch('/me', middleware, async function (req, res) {
   const id = req.decodedToken
-  // console.log(id)
   const body = req.body
   try {
     await User.updateOne(
@@ -66,23 +101,6 @@ router.patch('/me', middleware, async function (req, res) {
     res.send('patch incomplete')
   }
 })
-
-// router.post('/me', middleware, async function (req, res) {
-//   const id = req.decodedToken
-//   // console.log(id)
-//   const body = req.body
-//   try {
-//     await User.updateOne(
-//       {
-//         _id: id,
-//       },
-//       { $set: body },
-//     )
-//     res.send(body)
-//   } catch (error) {
-//     res.send('patch incomplete')
-//   }
-// })
 
 //login
 router.post('/login', async function (req, res) {
@@ -121,6 +139,8 @@ router.get('/:id', async function (req, res) {
     _id: id,
   })
     .populate('interestCategoryId')
+    .populate('followerUser')
+    .populate('followingUser')
     .populate({
       path: 'postId',
       // sort
@@ -136,6 +156,7 @@ router.get('/:id', async function (req, res) {
         },
       ],
     })
+  // console.log(Users)
   res.send(Users)
 })
 
