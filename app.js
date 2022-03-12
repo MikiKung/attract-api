@@ -9,6 +9,8 @@ const mark = require('./controller/mark.js')
 const category = require('./controller/category.js')
 const user = require('./controller/user.js')
 const post = require('./controller/post.js')
+const search = require('./controller/search')
+const comment = require('./controller/comment')
 
 app.use(
   cors({
@@ -28,6 +30,8 @@ app.use('/mark', mark)
 app.use('/category', category)
 app.use('/user', user)
 app.use('/post', post)
+app.use('/search', search)
+app.use("/comment", comment)
 
 // app.use('/menus', menu)
 // app.use('/categories', category)

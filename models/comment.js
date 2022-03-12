@@ -2,10 +2,8 @@ const mongoose = require('mongoose')
 
 const Comments = new mongoose.Schema({
   ownUserId: {
-    type: String,
-  },
-  commentUserId: {
-    type: String,
+    type: mongoose.Types.ObjectId,
+    ref: 'user',
   },
   commentText: {
     type: String,

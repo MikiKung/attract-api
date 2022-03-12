@@ -26,6 +26,12 @@ const Posts = new mongoose.Schema({
       ref: 'mark',
     },
   ],
+  commentId: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "comment"
+    }
+  ]
 })
 
 module.exports = mongoose.model('post', Posts)

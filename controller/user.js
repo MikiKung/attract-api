@@ -11,10 +11,11 @@ const middleware = (req, res, next) => {
   const token = req.headers.authorization
   if (!token || token == 'Bearer null') {
     return res.status(200).send('no token')
+  } else {
+    const r = jwt.verify(token.split(' ')[1], 'shhh')
+    req.decodedToken = r.id
+    next()
   }
-  const r = jwt.verify(token.split(' ')[1], 'shhh')
-  req.decodedToken = r.id
-  next()
 }
 
 router.post('/follow', middleware, async (req, res) => {
@@ -37,18 +38,53 @@ router.post('/follow', middleware, async (req, res) => {
   }
 })
 
+router.get('/following', middleware, async (req, res) => {
+  const user = await User.findById(req.decodedToken).populate('followingUser')
+  res.send(user.followingUser)
+})
+
+router.get('/follower', middleware, async (req, res) => {
+  const user = await User.findById(req.decodedToken).populate({path: 'followerUser', populate: "followerUser"})
+  res.send(user.followerUser)
+})
+
+router.get('/mostFollowers', async (req, res) => {
+  const users = await User.aggregate([
+    {
+      $addFields: {
+        counts: {
+          $size: '$followerUser',
+        },
+      },
+    },
+    {
+      $sort: {
+        counts: -1,
+      },
+    },
+    {
+      $limit: 10,
+    },
+  ])
+
+  res.send(users)
+})
+
 router.delete('/unfollow/:id', middleware, async (req, res) => {
   const user = await User.findById(req.decodedToken)
   const followingUser = await User.findById(req.params.id)
 
-  user.followingUser = user.followingUser.filter(e => e.toString() !== req.params.id)
-  followingUser.followerUser = followingUser.followerUser.filter(e => e.toString() !== req.decodedToken)
+  user.followingUser = user.followingUser.filter(
+    (e) => e.toString() !== req.params.id,
+  )
+  followingUser.followerUser = followingUser.followerUser.filter(
+    (e) => e.toString() !== req.decodedToken,
+  )
 
   await user.save()
   await followingUser.save()
 
-  res.send("Unfollow success")
-
+  res.send('Unfollow success')
 })
 
 router.get('/', async (req, res) => {
@@ -69,6 +105,10 @@ router.post('/', async function (req, res) {
     res.send('email is used')
   } else {
     try {
+      if (!body.img) {
+        body.img = `https://avatars.dicebear.com/api/croodles-neutral/${body.username}.svg`
+      }
+
       await User.create(body)
       res.send(body)
     } catch (error) {
@@ -126,9 +166,14 @@ router.get('/me', middleware, async (req, res) => {
       options: {
         sort: { timePost: -1 },
       },
-      populate: {
-        path: 'categoryId',
-      },
+      populate: [
+        {
+          path: 'categoryId',
+        },
+        {
+          path: 'markId',
+        },
+      ],
     })
   res.send(user)
 })

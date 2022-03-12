@@ -2,6 +2,7 @@ const express = require('express')
 const Mark = require('../models/mark')
 const Post = require('../models/post')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 const router = express.Router()
 
@@ -9,6 +10,30 @@ const router = express.Router()
 router.get('/', async (req, res) => {
   const marks = await Mark.find()
   res.send(marks)
+})
+
+router.get('/user', async (req, res) => {
+  const authorization = req.headers.authorization
+  if (authorization || authorization != 'Bearer null') {
+    const token = authorization.split(' ')[1]
+    if (!token) {
+      return res.send('no token')
+    }
+    const decoded = jwt.verify(token, 'shhh')
+
+    const marks = await Mark.find({ userId: decoded.id }).populate({
+      path: 'postId',
+      populate: [
+        { path: 'ownUserId' },
+        { path: 'markId' },
+        { path: 'categoryId' },
+      ],
+    })
+
+    res.send(marks)
+  } else {
+    res.send('no token')
+  }
 })
 
 // get one
@@ -42,12 +67,12 @@ router.delete('/:id', async function (req, res) {
   const post = await Post.findById(mark.postId)
   const user = await User.findById(mark.userId)
 
-  // console.log(id);
+  console.log(id);
 
-  post.markId = post.markId.filter(e => e.toString() !== mark._id.toString())
-  user.markPostId = user.markPostId.filter(e => e.toString() !== mark._id.toString())
-  console.log(post)
-  console.log(user)
+  post.markId = post.markId.filter((e) => e.toString() !== mark._id.toString())
+  user.markPostId = user.markPostId.filter(
+    (e) => e.toString() !== mark._id.toString(),
+  )
   await mark.delete()
   await post.save()
   await user.save()
