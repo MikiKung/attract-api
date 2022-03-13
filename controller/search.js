@@ -1,5 +1,6 @@
 const User = require('../models/user')
 const Category = require('../models/category')
+const Post = require('../models/post')
 const jwt = require('jsonwebtoken')
 
 const router = require('express').Router()
@@ -30,6 +31,54 @@ router.get('/', async (req, res) => {
           fullname: {
             $regex: new RegExp(q, 'gi'),
           },
+        },
+      },
+    ])
+  } else if (type == 'text') {
+    searchResult = await Post.aggregate([
+      {
+        $match: {
+          postText: {
+            $regex: new RegExp(q, 'gi'),
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'categoryId',
+          foreignField: '_id',
+          as: 'categoryId',
+        },
+      },
+      {
+        $lookup: {
+          from: 'comments',
+          let: {
+            comment: '$commentId',
+          },
+          pipeline: [
+            {
+              $match: { $expr: { $eq: ['$_id', '$$comment'] } },
+            },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'ownUserId',
+                foreignField: '_id',
+                as: 'ownUserId',
+              },
+            },
+          ],
+          as:'commentId'
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'ownUserId',
+          foreignField: '_id',
+          as: 'ownUserId',
         },
       },
     ])

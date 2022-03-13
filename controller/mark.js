@@ -27,6 +27,14 @@ router.get('/user', async (req, res) => {
         { path: 'ownUserId' },
         { path: 'markId' },
         { path: 'categoryId' },
+        {
+          path: 'commentId',
+          populate: [
+            {
+              path: 'ownUserId',
+            },
+          ],
+        },
       ],
     })
 
@@ -67,7 +75,7 @@ router.delete('/:id', async function (req, res) {
   const post = await Post.findById(mark.postId)
   const user = await User.findById(mark.userId)
 
-  console.log(id);
+  console.log(id)
 
   post.markId = post.markId.filter((e) => e.toString() !== mark._id.toString())
   user.markPostId = user.markPostId.filter(

@@ -7,7 +7,7 @@ const router = express.Router()
 
 // get all
 router.get('/', async (req, res) => {
-  const posts = await Post.find().populate('categoryId')
+  const posts = await Post.find().populate('categoryId').populate('commentId')
   res.send(posts)
 })
 
