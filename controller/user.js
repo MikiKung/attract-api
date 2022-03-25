@@ -44,7 +44,10 @@ router.get('/following', middleware, async (req, res) => {
 })
 
 router.get('/follower', middleware, async (req, res) => {
-  const user = await User.findById(req.decodedToken).populate({path: 'followerUser', populate: "followerUser"})
+  const user = await User.findById(req.decodedToken).populate({
+    path: 'followerUser',
+    populate: 'followerUser',
+  })
   res.send(user.followerUser)
 })
 
@@ -107,6 +110,7 @@ router.post('/', async function (req, res) {
     try {
       if (!body.img) {
         body.img = `https://avatars.dicebear.com/api/croodles-neutral/${body.username}.svg`
+        body.bgImg = `http://i2.wp.com/www.thasalahos.org/wp-content/uploads/2014/04/bokeh-cover-bg.jpg`
       }
 
       await User.create(body)
@@ -173,6 +177,10 @@ router.get('/me', middleware, async (req, res) => {
         {
           path: 'markId',
         },
+        {
+          path: 'commentId',
+          populate: [{ path: 'ownUserId' }],
+        },
       ],
     })
   res.send(user)
@@ -198,6 +206,10 @@ router.get('/:id', async function (req, res) {
         },
         {
           path: 'markId',
+        },
+        {
+          path: 'commentId',
+          populate: [{ path: 'ownUserId' }],
         },
       ],
     })

@@ -1,7 +1,9 @@
 const express = require('express')
 const Post = require('../models/post')
 const User = require('../models/user')
+const Category = require('../models/category')
 const jwt = require('jsonwebtoken')
+const mark = require('../models/mark')
 
 const router = express.Router()
 
@@ -222,6 +224,7 @@ router.delete('/:id', async function (req, res) {
   await Post.deleteOne({
     _id: id,
   })
+  await mark.deleteMany({postId: req.params.id})
   res.send('delete complete')
 })
 
