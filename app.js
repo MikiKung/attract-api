@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const port = 3001
 const cors = require('cors')
+const serverless = require('serverless-http')
 db
 // const menu = require('./controllers/menu.js')
 const mark = require('./controller/mark.js')
@@ -18,7 +19,9 @@ app.use(
   }),
 )
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.json({
+    "hello":"hello"
+  })
 })
 
 app.listen(port, () => {
@@ -33,20 +36,4 @@ app.use('/post', post)
 app.use('/search', search)
 app.use("/comment", comment)
 
-// app.use('/menus', menu)
-// app.use('/categories', category)
-// app.use('/promotions', promotion)
-// app.use('/orders', order)
-
-// const express = require('express');
-// const app = express();
-// const port = 3001;
-// const mongo = require("./db/mongo.js")
-
-// app.get('/', (req, res) => {
-//     res.send('Hello World!');
-// });
-
-// app.listen(port, () => {
-//     console.log(`Listening at http://localhost:${port} EIEI`);
-// });
+module.exports.handler = serverless(app)
