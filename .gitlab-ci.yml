@@ -1,0 +1,21 @@
+image: docker:stable
+stages:
+  - deploy_server
+deploy_server:
+  stage: deploy_server
+  before_script:
+    - cd server
+    - apk add --no-cache npm nodejs
+    - npm install
+  script:
+    - docker build -f Dockerfile --iidfile imageid.txt -t registry.heroku.com/attract-api .
+    - docker login -u _ -p b77c0b2e-5faf-446b-a2ff-2a96968f4bd1 registry.heroku.com
+    - docker push registry.heroku.com/attract-api
+    - apk add --no-cache curl
+    - echo "Docker Image ID is $(cat imageid.txt)"
+    - |-
+      curl -X PATCH https://api.heroku.com/apps/coffeepj/formation --header "Content-Type: application/json" --header "Accept: application/vnd.heroku+json; version=3.docker-releases" --header "Authorization: Bearer b77c0b2e-5faf-446b-a2ff-2a96968f4bd1" --data '{ "updates": [ { "type": "web", "docker_image": "'$(cat imageid.txt)'" } ] }'
+
+cache:
+  paths:
+    - node_modules/
